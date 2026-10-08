@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+.vs/
+*.user
+KeyLedger/keyledger.db
+KeyLedger/keyledger.db-shm
+KeyLedger/keyledger.db-wal

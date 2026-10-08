@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#182821">
+  <title>KeyLedger | Settings registry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v3h16v-3"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16m-10 4v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="KeyLedger home">
+        <span class="brand-mark">K<span>.</span></span>
+        <span class="brand-name">keyledger<span>SETTINGS REGISTRY</span></span>
+      </a>
+      <div class="sidebar-section">
+        <div class="sidebar-label">WORKSPACE</div>
+        <button class="nav-link is-active" id="allGroupsButton" type="button">
+          <svg class="icon"><use href="#i-grid"/></svg><span>All settings</span><span class="nav-count" id="navTotal">0</span>
+        </button>
+      </div>
+      <div class="sidebar-section group-navigation">
+        <div class="sidebar-heading"><span class="sidebar-label">GROUPS</span><button id="newGroupButton" class="quiet-icon-button" type="button" aria-label="Add a setting in a new group" title="Add a setting in a new group"><svg class="icon"><use href="#i-plus"/></svg></button></div>
+        <nav id="groupList" class="group-list" aria-label="Setting groups"></nav>
+      </div>
+      <div class="sidebar-footer">
+        <span class="connection-indicator" id="connectionDot"></span>
+        <span><strong id="connectionLabel">Connecting</strong><small id="databaseLabel">Database status</small></span>
+        <button class="quiet-icon-button footer-action" id="apiAccessButton" type="button" title="API access key" aria-label="API access key"><svg class="icon"><use href="#i-lock"/></svg></button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><svg class="icon"><use href="#i-chevron"/></svg><strong>Settings</strong></div>
+        <div class="topbar-right"><span class="environment"><span></span> LOCAL ENVIRONMENT</span><button class="export-button" id="exportButton" type="button"><svg class="icon"><use href="#i-download"/></svg><span>Export API</span></button></div>
+      </header>
+
+      <section class="page-content">
+        <div class="page-heading">
+          <div><div class="eyebrow">CONFIGURATION CONTROL</div><h1>Settings registry</h1><p class="page-description">One source of truth for the values your services depend on.</p></div>
+          <div class="heading-aside"><span class="heading-stamp">KL / 01</span><span>LAST SYNC <strong id="lastSync">--</strong></span></div>
+        </div>
+
+        <section class="overview" aria-label="Registry overview">
+          <div class="overview-item"><span class="metric-label">TOTAL SETTINGS</span><strong class="metric-value" id="totalMetric">0</strong><span class="metric-caption">across all groups</span></div>
+          <div class="overview-item"><span class="metric-label">GROUPS</span><strong class="metric-value" id="groupMetric">0</strong><span class="metric-caption">organized collections</span></div>
+          <div class="overview-item"><span class="metric-label">PROTECTED VALUES</span><strong class="metric-value" id="secretMetric">0</strong><span class="metric-caption">masked in this view</span></div>
+          <div class="overview-item api-overview"><span class="metric-label">REST API</span><strong class="api-state"><span class="status-pip"></span> <span id="apiState">Available</span></strong><span class="metric-caption">JSON · group-aware export</span></div>
+        </section>
+
+        <section class="registry-section" aria-labelledby="registryTitle">
+          <div class="registry-heading">
+            <div class="registry-title-wrap"><div><div class="eyebrow">KEY / VALUE STORE</div><h2 id="registryTitle">All settings <span id="visibleCount">0</span></h2></div></div>
+            <button class="primary-button" id="addSettingButton" type="button"><svg class="icon"><use href="#i-plus"/></svg><span>New setting</span></button>
+          </div>
+          <div class="toolbar">
+            <label class="search-field"><svg class="icon"><use href="#i-search"/></svg><input id="searchInput" type="search" placeholder="Search keys or groups" autocomplete="off"><kbd>/</kbd></label>
+            <label class="filter-field"><span>GROUP</span><select id="groupFilter"><option value="">All groups</option></select></label>
+            <button class="refresh-button" id="refreshButton" type="button" title="Refresh settings">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th class="group-column">GROUP</th><th>KEY</th><th>VALUE</th><th class="type-column">TYPE</th><th class="updated-column">UPDATED</th><th class="action-column"><span class="sr-only">Actions</span></th></tr></thead>
+              <tbody id="settingsRows"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState" hidden><span class="empty-mark">K<span>.</span></span><strong>No settings found</strong><span>Try another search or create a setting to get started.</span><button class="text-button" id="emptyAddButton" type="button">Create a setting <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+          </div>
+          <div class="table-footer"><span id="tableSummary">Showing 0 settings</span><span><span class="legend-dot"></span> Changes are saved immediately</span></div>
+        </section>
+        <footer class="page-footer"><span>KEYLEDGER <span class="footer-separator">/</span> CONFIGURATION REGISTRY</span><span>LOCAL-FIRST · PROVIDER-AGNOSTIC STORAGE</span></footer>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="modal" id="settingDialog">
+    <form id="settingForm" class="modal-form">
+      <div class="modal-topline"><div><div class="eyebrow" id="formEyebrow">NEW ENTRY</div><h2 id="formTitle">Add a setting</h2></div><button class="quiet-icon-button" type="button" data-close="settingDialog" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button></div>
+      <input type="hidden" id="settingId">
+      <label class="form-field"><span>GROUP</span><input id="settingGroup" name="group" list="knownGroups" maxlength="80" placeholder="e.g. Integrations" required><datalist id="knownGroups"></datalist></label>
+      <label class="form-field"><span>KEY</span><input id="settingKey" name="key" maxlength="180" placeholder="e.g. WebhookEndpoint" required></label>
+      <label class="form-field"><span>VALUE</span><textarea id="settingValue" name="value" rows="4" maxlength="4000" placeholder="Enter a value" spellcheck="false"></textarea><small id="secretHint" hidden>Leave blank to keep the current protected value.</small></label>
+      <label class="secret-toggle"><input id="settingSecret" name="isSecret" type="checkbox"><span class="toggle-track"></span><span><strong>Protect this value</strong><small>Hide it in the registry. Exports still include its value.</small></span></label>
+      <div class="form-error" id="formError" role="alert" hidden></div>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close="settingDialog">Cancel</button><button class="primary-button" type="submit" id="saveSettingButton">Save setting</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="modal export-modal" id="exportDialog">
+    <div class="modal-form">
+      <div class="modal-topline"><div><div class="eyebrow">REST ENDPOINT</div><h2>Take your settings with you.</h2></div><button class="quiet-icon-button" type="button" data-close="exportDialog" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button></div>
+      <p class="modal-intro">Fetch a JSON snapshot of every group, or scope the export to a single group.</p>
+      <div class="endpoint-block"><span class="http-method">GET</span><code id="exportUrl">/api/settings/export</code><button class="quiet-icon-button copy-button" id="copyUrlButton" type="button" title="Copy endpoint" aria-label="Copy endpoint"><svg class="icon"><use href="#i-copy"/></svg></button></div>
+      <label class="form-field export-filter"><span>OPTIONAL GROUP</span><select id="exportGroup"><option value="">All groups</option></select></label>
+      <div class="code-label">CURL</div><pre class="code-sample" id="curlSample"></pre>
+      <div class="export-note"><svg class="icon"><use href="#i-lock"/></svg><span>Protected values are included in exports. Require an API key before exposing this endpoint beyond localhost.</span></div>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close="exportDialog">Close</button><button class="primary-button" id="downloadExportButton" type="button"><svg class="icon"><use href="#i-download"/></svg>Download JSON</button></div>
+    </div>
+  </dialog>
+
+  <dialog class="modal compact-modal" id="keyDialog">
+    <form id="keyForm" class="modal-form">
+      <div class="modal-topline"><div><div class="eyebrow">API ACCESS</div><h2>Connect to your registry</h2></div><button class="quiet-icon-button" type="button" data-close="keyDialog" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button></div>
+      <p class="modal-intro">Enter the configured API key. It stays in this browser tab and is sent as an <code>X-Api-Key</code> header.</p>
+      <label class="form-field"><span>API KEY</span><input id="apiKeyInput" type="password" autocomplete="current-password" placeholder="Enter API key" required></label>
+      <div class="form-error" id="keyError" role="alert" hidden></div>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close="keyDialog">Cancel</button><button class="primary-button" type="submit">Connect</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="deleteDialog">
+    <form method="dialog" class="confirm-form"><div class="eyebrow">REMOVE ENTRY</div><h2>Delete this setting?</h2><p id="deleteMessage">This action cannot be undone.</p><div class="modal-actions"><button class="secondary-button" value="cancel">Cancel</button><button class="danger-button" id="confirmDeleteButton" value="confirm">Delete setting</button></div></form>
+  </dialog>
+  <div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
+</body>
+</html>
